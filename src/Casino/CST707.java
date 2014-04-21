@@ -18,5 +18,7 @@ public class CST707 {
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         // TODO code application logic here
         Connector conn = new Connector();
+        CasinoForm cfm = new CasinoForm(conn);
+        cfm.setVisible(true);
     }
 }

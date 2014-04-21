@@ -3,7 +3,11 @@
  * and open the template in the editor.
  */
 package Casino;
-
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
     *This form has a scroll bar to select the casino name from the
      * database.  Once the casino is selected, the information of the
@@ -12,11 +16,26 @@ package Casino;
  */
 public class CasinoForm extends javax.swing.JFrame {
 
+    private ResultSet rs;
     /**
      * 
      */
-    public CasinoForm() {
+    public CasinoForm(){
         initComponents();
+    }
+    
+    public CasinoForm(Connector conn) throws SQLException {
+        initComponents();
+        String query = "select * from Casino";
+        rs = conn.execQuery(query);
+        
+        Vector vec = new Vector();
+        while(rs.next()){
+            vec.add(rs.getString(2));
+        }
+        
+        jList1.setListData(vec);
+        
     }
 
     /**
@@ -69,6 +88,11 @@ public class CasinoForm extends javax.swing.JFrame {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
+        });
+        jList1.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jList1ValueChanged(evt);
+            }
         });
         CasinoNameScroll.setViewportView(jList1);
 
@@ -186,6 +210,25 @@ public class CasinoForm extends javax.swing.JFrame {
     private void PhoneNumberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PhoneNumberActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_PhoneNumberActionPerformed
+
+    private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
+        try {
+            // TODO add your handling code here:
+            int rsIndex = 1+jList1.getSelectedIndex();
+            rs.absolute(rsIndex);
+            CasinoID.setText(rs.getString("CasinoID"));
+            CasinoNameLabel.setText(rs.getString("CasinoName"));
+            Country.setText(rs.getString("Country"));
+            EstablishedDate.setText(rs.getString("EstablishedDate"));
+            PhoneNumber.setText(rs.getString("PhoneNumber"));
+            ZipCode.setText(rs.getString("ZipCode"));
+            State.setText(rs.getString("State"));
+            City.setText(rs.getString("City"));
+            Street.setText(rs.getString("AddressLine1"));
+        } catch (SQLException ex) {
+            Logger.getLogger(CasinoForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jList1ValueChanged
 
     /**
      * @param args the command line arguments
